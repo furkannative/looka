@@ -106,16 +106,19 @@ export async function generateImage(
     // Fal.ai response formatı: result.data.images[0].url (dokümantasyona göre)
     console.log("Fal.ai response:", JSON.stringify(result, null, 2));
     
-    if (result?.data?.images && result.data.images.length > 0) {
+    // Type assertion for TypeScript
+    const resultData = result as any;
+    
+    if (resultData?.data?.images && resultData.data.images.length > 0) {
       return {
         success: true,
-        url: result.data.images[0].url,
+        url: resultData.data.images[0].url,
       };
-    } else if (result?.images && result.images.length > 0) {
+    } else if (resultData?.images && Array.isArray(resultData.images) && resultData.images.length > 0) {
       // Fallback: Eğer data wrapper yoksa direkt images'e bak
       return {
         success: true,
-        url: result.images[0].url,
+        url: resultData.images[0].url,
       };
     } else {
       console.error("Fal.ai response formatı beklenmedik:", result);
